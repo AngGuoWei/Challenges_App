@@ -316,7 +316,7 @@ Devise.setup do |config|
     jwt.secret = Rails.application.credentials.fetch(:secret_key_base)
     jwt.dispatch_requests = [
       # Path can be retrieved from rails routes -c Users
-      ['POST', %r{^/users/sign_in$}],
+      ['POST', %r{^/users/  sign_in$}],
       # Also for registration when user signs up
       ['POST', %r{^/users$}]
     ]

@@ -1,6 +1,7 @@
 module Api
   module V1
     class ChallengesController < ApplicationController
+      before_action :authenticate_user!, only: %i[create update destroy]
       before_action :set_challenge, only: %i[show update destroy]
       # GET    /api/v1/challenges
       # Can get from rails routes -c challenges
@@ -15,14 +16,21 @@ module Api
         #Create single challenge
         # Use puts for debugging
         puts params
-        challenge = Challenge.new(
-          challenges_params
-        )
+        # See the current logged in user
+        puts current_user
+        # Need to merge the current_user.id to the instance variable as challenge params did not permit user_id
+        # @challenge = Challenge.new(challenges_params.merge(user_id: current_user.id))
 
-        if challenge.save
-          render json: { message: 'Challenge is created successfully', data: challenge }
+        # Using the current_user, I create the challenges
+        @challenge = current_user.challenges.build(challenges_params)
+        puts 'RRRR'
+        puts @challenge
+        puts 'RRRR'
+
+        if @challenge.save
+          render json: { message: 'Challenge is created successfully', data: @challenge }
         else
-          render json: { message: 'Failed to add challenge', data: challenge.errors }
+          render json: { message: 'Failed to add challenge', data: @challenge.errors }
         end  
       end
 
