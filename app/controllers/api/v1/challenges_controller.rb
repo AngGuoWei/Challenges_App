@@ -3,6 +3,8 @@ module Api
     class ChallengesController < ApplicationController
       before_action :authenticate_user!, only: %i[create update destroy]
       before_action :set_challenge, only: %i[show update destroy]
+      # Will only allow admin users to perform these actions
+      before_action :authorize_admin, only: %i[create update destroy]
       # GET    /api/v1/challenges
       # Can get from rails routes -c challenges
       def index
@@ -72,6 +74,10 @@ module Api
 
       def challenges_params
         params.require(:challenge).permit(:title, :description, :start_date, :end_date)
+      end
+
+      def authorize_admin
+        render json: { message: 'Forbidden action'} unless current_user.email == ENV["ADMIN_EMAIL"]
       end
 
     end
